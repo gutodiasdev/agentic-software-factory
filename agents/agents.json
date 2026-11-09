@@ -1,0 +1,116 @@
+{
+  "_comment": "Single source of truth for the factory role agents. The installer renders each entry into the target profile's format (.kiro/agents/*.md for Kiro, .claude/agents/*.md for Claude). `tools` uses neutral capability names mapped per profile: read, write, shell, web, subagent. `perms` selects a Kiro permission profile (readonly-specs | reviewer-run | builder | orchestrator); Claude governs tool access via its own allowlist + permission prompts. `skillStage` ties the agent to a pipeline stage so its default skill can be resolved; null means it uses factory-conventions.",
+  "agents": [
+    {
+      "name": "factory-orchestrator",
+      "role": "orchestrator",
+      "skillStage": null,
+      "kind": "orchestrator",
+      "tools": ["read", "write", "shell", "subagent"],
+      "perms": "orchestrator",
+      "body": "orchestrator.md",
+      "welcomeMessage": "🏭 Factory orchestrator ready. Give me a demand and I'll run it through intake → … → approval.",
+      "description": "Conductor of the agentic software factory. Takes a demand from intake all the way to approval, dispatching each phase to its specialized sub-agent, handling reviewer loopbacks back to the builder, and rendering the factory board after every transition. Use this agent to run a demand end to end through the pipeline."
+    },
+    {
+      "name": "factory-intake",
+      "role": "intake",
+      "skillStage": "intake",
+      "kind": "generator",
+      "tools": ["read", "write", "shell", "web"],
+      "perms": "readonly-specs",
+      "body": "intake.md",
+      "description": "Intake officer of the software factory. Normalizes a raw demand into a clear, scoped problem statement, creates the demand folder via factory.mjs, maps it to reference IDs, and writes 00-INTAKE.md. First phase of the pipeline."
+    },
+    {
+      "name": "factory-spec-generator",
+      "role": "spec",
+      "skillStage": "spec",
+      "kind": "generator",
+      "tools": ["read", "write", "shell", "web"],
+      "perms": "readonly-specs",
+      "body": "spec-generator.md",
+      "description": "Spec writer of the software factory. Turns 00-INTAKE.md into a technical specification (10-SPEC.md) — requirements table, chosen design with trade-offs, modules/files touched, data-model touchpoints, interfaces/contracts, task breakdown and risks. Second phase of the pipeline."
+    },
+    {
+      "name": "factory-acceptance-criteria-generator",
+      "role": "acceptance",
+      "skillStage": "acceptance",
+      "kind": "generator",
+      "tools": ["read", "write", "shell"],
+      "perms": "readonly-specs",
+      "body": "acceptance-criteria-generator.md",
+      "description": "Acceptance-criteria author of the software factory. Derives testable Given/When/Then criteria and cross-cutting checks (20-ACCEPTANCE-CRITERIA.md) from the spec, each mapped to a requirement with named evidence. Third phase of the pipeline; produces the contract reviewers verify against."
+    },
+    {
+      "name": "factory-builder-engineer",
+      "role": "build",
+      "skillStage": "build",
+      "kind": "builder",
+      "tools": ["read", "write", "shell", "web"],
+      "perms": "builder",
+      "body": "builder-engineer.md",
+      "description": "Builder engineer of the software factory. Implements the spec to satisfy the acceptance criteria, writing production code and tests, and records a build report (30-BUILD-REPORT.md). Re-entered on every reviewer loopback to address findings. The only role that changes product code."
+    },
+    {
+      "name": "factory-code-reviewer",
+      "role": "code-review",
+      "skillStage": "code-review",
+      "kind": "reviewer",
+      "tools": ["read", "write", "shell"],
+      "perms": "reviewer-run",
+      "body": "code-reviewer.md",
+      "description": "Code reviewer of the software factory. Performs a behavioral and structural review of the build diff against the spec and acceptance criteria (correctness, security, conventions, tests, scope) and writes 40-CODE-REVIEW.md with a PASS/FAIL verdict. On FAIL, loops the demand back to the builder."
+    },
+    {
+      "name": "factory-ui-reviewer",
+      "role": "ui-review",
+      "skillStage": "ui-review",
+      "kind": "reviewer",
+      "tools": ["read", "write", "shell"],
+      "perms": "readonly-specs",
+      "body": "ui-reviewer.md",
+      "description": "UI reviewer of the software factory. Checks the visual layer against the project's style guide — design tokens, single icon set, all interaction states, responsiveness, asset licensing — and writes 50-UI-REVIEW.md with a PASS/FAIL/N/A verdict. On FAIL, loops back to the builder."
+    },
+    {
+      "name": "factory-ux-reviewer",
+      "role": "ux-review",
+      "skillStage": "ux-review",
+      "kind": "reviewer",
+      "tools": ["read", "write", "shell"],
+      "perms": "readonly-specs",
+      "body": "ux-reviewer.md",
+      "description": "UX reviewer of the software factory. Checks flow, clarity, information architecture and accessibility against the project's design principles (reachability, effect-preview before confirm, actionable alerts, progressive disclosure, keyboard nav, contrast, color-independent state) and writes 60-UX-REVIEW.md with a PASS/FAIL/N/A verdict. On FAIL, loops back to the builder."
+    },
+    {
+      "name": "factory-acceptance-criteria-reviewer",
+      "role": "acceptance-review",
+      "skillStage": "acceptance-review",
+      "kind": "reviewer",
+      "tools": ["read", "write", "shell"],
+      "perms": "reviewer-run",
+      "body": "acceptance-criteria-reviewer.md",
+      "description": "Acceptance-criteria checks reviewer of the software factory. Verifies every criterion in 20-ACCEPTANCE-CRITERIA.md is met with concrete evidence (tests, command output, repro) plus the applicable cross-cutting checks, and writes 70-ACCEPTANCE-REVIEW.md with a PASS/FAIL verdict. On FAIL, loops back to the builder."
+    },
+    {
+      "name": "factory-approver",
+      "role": "approval",
+      "skillStage": "approval",
+      "kind": "approver",
+      "tools": ["read", "write", "shell"],
+      "perms": "readonly-specs",
+      "body": "approver.md",
+      "description": "Approver of the software factory — the final gate. Confirms intake/spec/acceptance exist and are coherent, that code/ui/ux/acceptance reviews are all PASS or N/A, and that the Product Owner traceability (PO-LOG + TRACEABILITY matrix) is complete, then writes 80-APPROVAL.md and marks the demand approved or rejected."
+    },
+    {
+      "name": "factory-product-owner",
+      "role": "product-owner",
+      "skillStage": null,
+      "kind": "scribe",
+      "tools": ["read", "write", "shell"],
+      "perms": "readonly-specs",
+      "body": "product-owner.md",
+      "description": "Product Owner / scribe of the software factory. Documents the entire flow of every demand across every phase for complete traceability — maintains the append-only PO-LOG.md narrative and the TRACEABILITY.md matrix (requirement → acceptance criterion → evidence → result), and records every phase transition and loopback. Invoked after each phase and on every loopback."
+    }
+  ]
+}

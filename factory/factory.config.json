@@ -1,0 +1,138 @@
+{
+  "$schema": "./factory.schema.json",
+  "name": "Agentic Software Factory",
+  "version": "1.0.0",
+  "description": "Portable, tool-agnostic agentic software-factory pipeline. Single source of truth: the orchestrator agent and the board renderer both read this file. Edit here to add/remove/reorder stages, swap agents, change the default skill per phase, or re-point loopbacks. Per-phase skill OVERRIDES live in factory.skills.json (that file wins over the `skill` default below).",
+  "specsRoot": ".specs",
+  "idPrefix": "DMD",
+  "scribe": "factory-product-owner",
+  "orchestrator": "factory-orchestrator",
+  "loopbackTarget": "build",
+  "stages": [
+    {
+      "id": "intake",
+      "order": 0,
+      "label": "Intake",
+      "icon": "📥",
+      "kind": "generator",
+      "agent": "factory-intake",
+      "artifact": "00-INTAKE.md",
+      "skill": "factory-conventions",
+      "iterative": false,
+      "description": "Normalize the raw demand into a clear, scoped problem statement with context, constraints and mapped reference IDs."
+    },
+    {
+      "id": "spec",
+      "order": 10,
+      "label": "Spec Generator",
+      "icon": "📝",
+      "kind": "generator",
+      "agent": "factory-spec-generator",
+      "artifact": "10-SPEC.md",
+      "skill": "factory-spec-writing",
+      "iterative": false,
+      "description": "Turn the intake into a technical specification: requirements, design, data touchpoints, interfaces and a task breakdown."
+    },
+    {
+      "id": "acceptance",
+      "order": 20,
+      "label": "Acceptance Criteria",
+      "icon": "🧾",
+      "kind": "generator",
+      "agent": "factory-acceptance-criteria-generator",
+      "artifact": "20-ACCEPTANCE-CRITERIA.md",
+      "skill": "factory-acceptance-criteria",
+      "iterative": false,
+      "description": "Derive testable, Given/When/Then acceptance criteria from the spec. These are the contract every reviewer verifies against."
+    },
+    {
+      "id": "build",
+      "order": 30,
+      "label": "Builder Engineer",
+      "icon": "🔧",
+      "kind": "builder",
+      "agent": "factory-builder-engineer",
+      "artifact": "30-BUILD-REPORT.md",
+      "skill": "factory-conventions",
+      "iterative": true,
+      "description": "Implement the spec to satisfy the acceptance criteria. Re-entered on every loopback from a reviewer."
+    },
+    {
+      "id": "code-review",
+      "order": 40,
+      "label": "Code Reviewer",
+      "icon": "🔍",
+      "kind": "reviewer",
+      "agent": "factory-code-reviewer",
+      "artifact": "40-CODE-REVIEW.md",
+      "skill": "factory-code-review",
+      "iterative": true,
+      "loopbackTo": "build",
+      "description": "Behavioral and structural review of the diff: correctness, security, conventions, tests, scope."
+    },
+    {
+      "id": "ui-review",
+      "order": 50,
+      "label": "UI Reviewer",
+      "icon": "🎨",
+      "kind": "reviewer",
+      "agent": "factory-ui-reviewer",
+      "artifact": "50-UI-REVIEW.md",
+      "skill": "factory-ui-review",
+      "iterative": true,
+      "loopbackTo": "build",
+      "description": "Visual correctness against the style guide: layout, tokens, responsiveness, iconography, states. N/A when there is no UI surface."
+    },
+    {
+      "id": "ux-review",
+      "order": 60,
+      "label": "UX Reviewer",
+      "icon": "🧭",
+      "kind": "reviewer",
+      "agent": "factory-ux-reviewer",
+      "artifact": "60-UX-REVIEW.md",
+      "skill": "factory-ux-review",
+      "iterative": true,
+      "loopbackTo": "build",
+      "description": "Flow, clarity, accessibility and information architecture. N/A when there is no user-facing flow."
+    },
+    {
+      "id": "acceptance-review",
+      "order": 70,
+      "label": "Acceptance Review",
+      "icon": "🧪",
+      "kind": "reviewer",
+      "agent": "factory-acceptance-criteria-reviewer",
+      "artifact": "70-ACCEPTANCE-REVIEW.md",
+      "skill": "factory-acceptance-criteria",
+      "iterative": true,
+      "loopbackTo": "build",
+      "description": "Verify every acceptance criterion from phase 20 is met, with evidence (tests, output, repro steps)."
+    },
+    {
+      "id": "approval",
+      "order": 80,
+      "label": "Approver",
+      "icon": "🏁",
+      "kind": "approver",
+      "agent": "factory-approver",
+      "artifact": "80-APPROVAL.md",
+      "skill": "factory-conventions",
+      "iterative": false,
+      "description": "Final gate. Confirms all prior stages passed and traceability is complete, then approves or rejects the demand."
+    }
+  ],
+  "statuses": {
+    "pending": { "glyph": "○", "color": 244, "badge": "pending" },
+    "active": { "glyph": "◐", "color": 45, "badge": "active" },
+    "done": { "glyph": "✔", "color": 42, "badge": "pass" },
+    "failed": { "glyph": "✖", "color": 203, "badge": "fail" },
+    "skipped": { "glyph": "–", "color": 240, "badge": "skipped" }
+  },
+  "theme": {
+    "accent": 213,
+    "rule": 240,
+    "muted": 244,
+    "loopback": 203
+  }
+}

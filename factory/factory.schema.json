@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Agentic Software Factory config",
+  "type": "object",
+  "required": ["name", "version", "specsRoot", "idPrefix", "stages"],
+  "properties": {
+    "name": { "type": "string" },
+    "version": { "type": "string" },
+    "description": { "type": "string" },
+    "specsRoot": { "type": "string" },
+    "idPrefix": { "type": "string" },
+    "scribe": { "type": "string" },
+    "orchestrator": { "type": "string" },
+    "loopbackTarget": { "type": "string" },
+    "stages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "order", "label", "icon", "kind", "agent", "artifact"],
+        "properties": {
+          "id": { "type": "string" },
+          "order": { "type": "integer" },
+          "label": { "type": "string" },
+          "icon": { "type": "string" },
+          "kind": { "type": "string", "enum": ["generator", "builder", "reviewer", "approver"] },
+          "agent": { "type": "string" },
+          "artifact": { "type": "string" },
+          "skill": {
+            "type": "string",
+            "description": "Default skill for this phase. Overridden per phase by factory.skills.json."
+          },
+          "iterative": { "type": "boolean" },
+          "loopbackTo": { "type": "string" },
+          "description": { "type": "string" }
+        }
+      }
+    },
+    "statuses": { "type": "object" },
+    "theme": { "type": "object" }
+  }
+}

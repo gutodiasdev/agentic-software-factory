@@ -1,0 +1,12 @@
+{
+  "_comment": "Per-phase SKILL OVERRIDES. This is the one knob you touch to point each phase at the skill you prefer. Put a skill folder name on the right (the folder under .kiro/skills/<name>/ or .claude/skills/<name>/). Leave a phase empty (\"\") to use the default skill declared for that phase in factory.config.json. Keys are stage ids; unknown keys are ignored.",
+  "intake": "",
+  "spec": "",
+  "acceptance": "",
+  "build": "",
+  "code-review": "",
+  "ui-review": "",
+  "ux-review": "",
+  "acceptance-review": "",
+  "approval": ""
+}
