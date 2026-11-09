@@ -1,0 +1,40 @@
+{
+  "name": "agentic-software-factory",
+  "version": "1.0.0",
+  "description": "A portable, white-label agentic software factory: a fixed pipeline of specialized AI agents that take any demand from intake to approval. Installs into your project for Kiro CLI and Claude Code.",
+  "type": "module",
+  "bin": {
+    "agentic-software-factory": "./install.mjs"
+  },
+  "scripts": {
+    "install-factory": "node install.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "files": [
+    "install.mjs",
+    "agents/",
+    "factory/",
+    "profiles/",
+    "skills/",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "ai",
+    "agents",
+    "agentic",
+    "kiro",
+    "claude",
+    "claude-code",
+    "software-factory",
+    "spec",
+    "pipeline"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/<you>/agentic-software-factory.git"
+  }
+}

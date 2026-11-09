@@ -4,8 +4,11 @@
 // rendering the role agents into the chosen profile's format.
 //
 // Usage:
-//   node install.mjs --profile <kiro|claude|both> [--target <dir>] [--force]
-//   node install.mjs                 # interactive (prompts for the profile)
+//   node install.mjs --agent <kiro|claude|both> [--target <dir>] [--force]
+//   node install.mjs                 # interactive (prompts for the agent format)
+//
+// Via npx (no clone needed):
+//   npx github:<you>/agentic-software-factory --agent kiro --target /path/to/project
 //
 //   kiro   → agents to .kiro/agents/, skills to .kiro/skills/, writes AGENTS.md
 //   claude → subagents to .claude/agents/, skills to .claude/skills/, slash command,
@@ -51,10 +54,10 @@ const fail = (s) => { process.stderr.write(`${C.red}install error:${C.reset} ${s
 function help() {
   say(`${C.bold}Agentic Software Factory — installer${C.reset}
 
-  node install.mjs --profile <kiro|claude|both> [--target <dir>] [--force]
+  node install.mjs --agent <kiro|claude|both> [--target <dir>] [--force]
 
   ${C.bold}Options${C.reset}
-    --profile   kiro | claude | both   which agent format to install
+    --agent     kiro | claude | both   which agent format to install
     --target    directory to install into (default: current directory)
     --force     overwrite an existing root AGENTS.md / CLAUDE.md without backing up
     --help      show this help
@@ -249,13 +252,13 @@ function installProfile(target, profile) {
   }
 }
 
-async function promptProfile() {
+async function promptAgent() {
   if (!process.stdin.isTTY) {
-    fail("no --profile given and not an interactive terminal. Use --profile <kiro|claude|both>.");
+    fail("no --agent given and not an interactive terminal. Use --agent <kiro|claude|both>.");
   }
   const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
   const answer = await new Promise((res) =>
-    rl.question(`${C.bold}Which agent profile?${C.reset} ${C.dim}[1] Kiro  [2] Claude  [3] both:${C.reset} `, res)
+    rl.question(`${C.bold}Which agent format?${C.reset} ${C.dim}[1] Kiro  [2] Claude  [3] both:${C.reset} `, res)
   );
   rl.close();
   const a = answer.trim().toLowerCase();
@@ -269,11 +272,11 @@ async function promptProfile() {
 async function main() {
   if (flags.help) return help();
 
-  let profile = flags.profile;
-  if (!profile) profile = await promptProfile();
+  let profile = flags.agent;
+  if (!profile) profile = await promptAgent();
   profile = String(profile).toLowerCase();
   if (!["kiro", "claude", "both"].includes(profile)) {
-    fail(`--profile must be kiro, claude, or both (got '${profile}').`);
+    fail(`--agent must be kiro, claude, or both (got '${profile}').`);
   }
 
   const target = path.resolve(flags.target ? String(flags.target) : process.cwd());
@@ -284,7 +287,7 @@ async function main() {
 
   say("");
   say(`${C.pink}${C.bold}Installing the Agentic Software Factory${C.reset}`);
-  info(`profile: ${C.bold}${profile}${C.reset}`);
+  info(`agent:  ${C.bold}${profile}${C.reset}`);
   info(`target:  ${target}`);
   say("");
 

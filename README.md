@@ -17,16 +17,25 @@ re-runs the reviewers. A **product owner** agent records every transition for tr
 ## Install
 
 Pick the agent format for your tool. The installer copies the engine into your project and renders
-the agents into the chosen profile.
+the agents into the chosen format.
+
+```bash
+# run straight from the repo with npx (no clone needed)
+npx github:<you>/agentic-software-factory --agent kiro   --target /path/to/your-project
+npx github:<you>/agentic-software-factory --agent claude --target /path/to/your-project
+npx github:<you>/agentic-software-factory --agent both   --target /path/to/your-project
+```
+
+Or clone and run the installer directly:
 
 ```bash
 git clone https://github.com/<you>/agentic-software-factory.git
 cd agentic-software-factory
 
 # install into your project (choose one)
-node install.mjs --profile kiro   --target /path/to/your-project
-node install.mjs --profile claude --target /path/to/your-project
-node install.mjs --profile both   --target /path/to/your-project
+node install.mjs --agent kiro   --target /path/to/your-project
+node install.mjs --agent claude --target /path/to/your-project
+node install.mjs --agent both   --target /path/to/your-project
 
 # or run with no flags for an interactive prompt
 node install.mjs --target /path/to/your-project
